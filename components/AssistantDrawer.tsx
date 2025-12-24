@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { chatWithAssistant } from '../services/geminiService.ts';
 import { MOCK_SPOTS } from '../constants.tsx';
@@ -29,7 +28,9 @@ export const AssistantDrawer: React.FC = () => {
     try {
       const context = JSON.stringify(MOCK_SPOTS);
       const response = await chatWithAssistant(userMsg, context);
-      setMessages(prev => [...prev, { role: 'bot', text: response || "I'm not sure, could you rephrase?" }]);
+      // Ensure the response is treated as a string
+      const botText = typeof response === 'string' ? response : "I'm sorry, I encountered an error processing that.";
+      setMessages(prev => [...prev, { role: 'bot', text: botText }]);
     } catch (e) {
       setMessages(prev => [...prev, { role: 'bot', text: "Sorry, I'm having trouble connecting." }]);
     } finally {
@@ -61,7 +62,7 @@ export const AssistantDrawer: React.FC = () => {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${m.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-gray-100 text-gray-800 rounded-tl-none'}`}>
-                  {m.text}
+                  {String(m.text)}
                 </div>
               </div>
             ))}
