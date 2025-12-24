@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { GroundingSource } from "../types.ts";
 
@@ -24,15 +23,15 @@ export const getParkingInsights = async (location: string): Promise<{ text: stri
       chunks.forEach((chunk: any) => {
         if (chunk.web) {
           sources.push({
-            title: chunk.web.title || 'Source',
-            uri: chunk.web.uri
+            title: String(chunk.web.title || 'Source'),
+            uri: String(chunk.web.uri)
           });
         }
       });
     }
 
     return {
-      text: response.text || "No insights found.",
+      text: String(response.text || "No insights found."),
       sources
     };
   } catch (error) {
@@ -41,7 +40,7 @@ export const getParkingInsights = async (location: string): Promise<{ text: stri
   }
 };
 
-export const chatWithAssistant = async (message: string, context: string) => {
+export const chatWithAssistant = async (message: string, context: string): Promise<string> => {
   try {
     const ai = new GoogleGenAI({ apiKey: getApiKey() });
     const chat = ai.chats.create({
@@ -55,7 +54,7 @@ export const chatWithAssistant = async (message: string, context: string) => {
     });
 
     const response = await chat.sendMessage({ message });
-    return response.text;
+    return String(response.text || "");
   } catch (error) {
     console.error("Chat Assistant Error:", error);
     return "I'm having a bit of trouble connecting to my assistant brain right now. Please try again in a moment!";
