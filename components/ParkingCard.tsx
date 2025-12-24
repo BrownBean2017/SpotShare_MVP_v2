@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ParkingSpot } from '../types.ts';
 
 interface ParkingCardProps {
@@ -7,20 +7,35 @@ interface ParkingCardProps {
 }
 
 export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
     <div 
       className="group cursor-pointer flex flex-col gap-3 animate-fade-in"
       onClick={() => onClick(spot)}
     >
       <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-gray-100">
+        {/* Loading Spinner / Placeholder */}
+        {!isLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <i className="fas fa-circle-notch fa-spin text-indigo-200 text-2xl"></i>
+          </div>
+        )}
+        
         <img 
           src={spot.image} 
           alt={spot.title} 
-          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+          onLoad={() => setIsLoaded(true)}
+          className={`object-cover w-full h-full transition-all duration-700 group-hover:scale-110 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
-        <button className="absolute top-4 right-4 text-white/90 text-xl drop-shadow-lg hover:scale-125 hover:text-red-500 transition-all">
+        
+        <button 
+          className="absolute top-4 right-4 text-white/90 text-xl drop-shadow-lg hover:scale-125 hover:text-red-500 transition-all"
+          onClick={(e) => { e.stopPropagation(); /* Handle favorite */ }}
+        >
           <i className="fa-regular fa-heart"></i>
         </button>
+        
         {spot.rating >= 4.9 && (
           <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm">
             Superhost

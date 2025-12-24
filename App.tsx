@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [insights, setInsights] = useState<{ text: string, sources: GroundingSource[] } | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -53,13 +54,14 @@ const App: React.FC = () => {
         {view === ViewMode.HOME && (
           <div className="space-y-12">
             {/* Hero Section */}
-            <section className="relative h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl">
+            <section className="relative h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl bg-indigo-900">
               <img 
-                src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=2400" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                src="https://images.unsplash.com/photo-1542362567-b05e81799a14?auto=format&fit=crop&q=80&w=2400" 
+                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 ${heroLoaded ? 'opacity-50' : 'opacity-0'}`}
                 alt="Modern Garage"
+                onLoad={() => setHeroLoaded(true)}
               />
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-6 text-center">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-center p-6 text-center">
                 <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
                   Parking, <span className="text-indigo-400 text-glow">Simplified.</span>
                 </h1>
@@ -189,8 +191,8 @@ const App: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               <div className="lg:col-span-8 space-y-8">
-                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100">
-                  <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
+                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100 flex items-center justify-center">
+                   <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
                 </div>
                 
                 <div className="space-y-6">
