@@ -61,6 +61,9 @@ const App: React.FC = () => {
                 alt="Modern Garage"
                 onLoad={() => setHeroStatus('loaded')}
               />
+              {heroStatus === 'loading' && (
+                <div className="absolute inset-0 shimmer opacity-20"></div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-center p-6 text-center">
                 <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
                   Parking, <span className="text-indigo-400 text-glow">Simplified.</span>
@@ -113,7 +116,7 @@ const App: React.FC = () => {
 
             {/* Featured Grid */}
             <div className="space-y-6 animate-in" style={{ animationDelay: '0.3s' }}>
-               <h2 className="text-2xl font-bold tracking-tight px-1">Discover spaces near you</h2>
+               <h2 className="text-2xl font-bold tracking-tight px-1 text-gray-900">Discover spaces near you</h2>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {MOCK_SPOTS.map(spot => (
                   <ParkingCard key={spot.id} spot={spot} onClick={handleSpotClick} />
@@ -194,7 +197,7 @@ const App: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               <div className="lg:col-span-8 space-y-8">
-                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100 flex items-center justify-center">
+                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100 flex items-center justify-center border border-gray-100">
                    <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
                 </div>
                 
@@ -212,21 +215,21 @@ const App: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl">
+                  <div className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl border border-gray-100">
                     <div className="flex items-center gap-4">
                       <img src={selectedSpot.owner.avatar} className="w-16 h-16 rounded-2xl object-cover border-4 border-white shadow-sm" alt={selectedSpot.owner.name} />
                       <div>
-                        <p className="text-xl font-bold">Hosted by {selectedSpot.owner.name}</p>
+                        <p className="text-xl font-bold text-gray-900">Hosted by {selectedSpot.owner.name}</p>
                         <p className="text-gray-500 font-medium">Verified Superhost</p>
                       </div>
                     </div>
-                    <button className="bg-white text-indigo-600 font-bold px-6 py-3 rounded-2xl border border-gray-200 hover:bg-indigo-50 transition-colors">
+                    <button className="bg-white text-indigo-600 font-bold px-6 py-3 rounded-2xl border border-gray-200 hover:bg-indigo-50 transition-colors shadow-sm">
                       Contact Host
                     </button>
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold">About this space</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">About this space</h3>
                     <p className="text-gray-600 leading-relaxed text-lg">
                       {selectedSpot.description}
                     </p>
@@ -255,7 +258,7 @@ const App: React.FC = () => {
                   <div className="space-y-4 pt-4">
                     <div className="p-4 border border-gray-200 rounded-2xl bg-gray-50 space-y-2">
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date Range</p>
-                      <p className="font-bold">Select timing</p>
+                      <p className="font-bold text-gray-900">Select timing</p>
                     </div>
                     <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl transition-all shadow-xl shadow-indigo-100 transform hover:scale-[1.02] active:scale-95 text-lg">
                       Reserve Now
@@ -271,7 +274,7 @@ const App: React.FC = () => {
         {view === ViewMode.HOST && (
           <div className="max-w-4xl mx-auto py-20 text-center space-y-12 animate-in">
             <div className="space-y-4">
-              <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter">Turn your empty space into <span className="text-indigo-600">income.</span></h2>
+              <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-gray-900">Turn your empty space into <span className="text-indigo-600">income.</span></h2>
               <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
                 Whether it's a driveway, garage, or lot—listing on ParkShare is free and fast.
               </p>
@@ -282,11 +285,11 @@ const App: React.FC = () => {
                 { title: 'Flexible', desc: 'You decide when to rent and for how much.', icon: 'fa-sliders' },
                 { title: 'Profitable', desc: 'Hosts earn an average of $300/mo per spot.', icon: 'fa-bolt-lightning' }
               ].map(feat => (
-                <div key={feat.title} className="p-8 bg-gray-50 rounded-[2rem] space-y-4">
+                <div key={feat.title} className="p-8 bg-gray-50 rounded-[2rem] space-y-4 border border-gray-100">
                   <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center">
                     <i className={`fas ${feat.icon} text-xl`}></i>
                   </div>
-                  <h4 className="text-xl font-bold">{feat.title}</h4>
+                  <h4 className="text-xl font-bold text-gray-900">{feat.title}</h4>
                   <p className="text-gray-500 leading-relaxed font-medium">{feat.desc}</p>
                 </div>
               ))}

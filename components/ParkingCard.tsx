@@ -14,19 +14,19 @@ export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
       className="group cursor-pointer flex flex-col gap-3 animate-in"
       onClick={() => onClick(spot)}
     >
-      <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-gray-100 shadow-sm">
-        {/* Shimmer Placeholder */}
+      <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-gray-100 shadow-sm border border-gray-100">
+        {/* Shimmer / Skeleton State */}
         {status === 'loading' && (
           <div className="absolute inset-0 shimmer flex items-center justify-center">
             <i className="fas fa-car text-gray-300 text-3xl"></i>
           </div>
         )}
 
-        {/* Error Fallback */}
+        {/* Error Fallback UI */}
         {status === 'error' && (
           <div className="absolute inset-0 bg-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
             <i className="fas fa-image-slash text-2xl mb-2"></i>
-            <span className="text-[10px] font-bold uppercase">Image Preview Unavailable</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest">Image Unavailable</span>
           </div>
         )}
         
@@ -39,15 +39,16 @@ export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
             ${status === 'loaded' ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
         />
         
+        {/* Heart Overlay */}
         <button 
-          className="absolute top-4 right-4 text-white/90 text-xl drop-shadow-lg hover:scale-125 hover:text-red-500 transition-all z-10"
-          onClick={(e) => { e.stopPropagation(); /* Handle favorite */ }}
+          className="absolute top-4 right-4 text-white/90 text-xl drop-shadow-md hover:scale-125 hover:text-red-500 transition-all z-10"
+          onClick={(e) => { e.stopPropagation(); /* Logic for fav */ }}
         >
           <i className="fa-regular fa-heart"></i>
         </button>
         
         {spot.rating >= 4.9 && (
-          <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm z-10">
+          <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm z-10 border border-gray-100">
             Guest Favorite
           </div>
         )}
@@ -63,7 +64,7 @@ export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
         </div>
         <p className="text-gray-500 text-sm line-clamp-1 mt-0.5">{spot.title}</p>
         <p className="text-indigo-600/70 text-[10px] font-bold mt-1 uppercase tracking-tighter">Instant Book</p>
-        <p className="mt-2 font-bold text-lg">
+        <p className="mt-2 font-bold text-lg text-gray-900">
           ${spot.pricePerHour.toFixed(2)} <span className="font-medium text-gray-400 text-sm">hour</span>
         </p>
       </div>
