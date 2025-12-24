@@ -1,0 +1,7 @@
+{
+  "name": "ParkShare - Parking Spot Simplified!",
+  "description": "A peer-to-peer parking rental marketplace similar to Airbnb. Find, book, and list parking spots easily with AI-powered search and real-time market data.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
