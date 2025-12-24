@@ -28,7 +28,6 @@ export const AssistantDrawer: React.FC = () => {
     try {
       const context = JSON.stringify(MOCK_SPOTS);
       const response = await chatWithAssistant(userMsg, context);
-      // Ensure the response is treated as a string
       const botText = typeof response === 'string' ? response : "I'm sorry, I encountered an error processing that.";
       setMessages(prev => [...prev, { role: 'bot', text: botText }]);
     } catch (e) {
@@ -48,13 +47,13 @@ export const AssistantDrawer: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col border-l border-gray-200 animate-fade-in">
+        <div className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl z-50 flex flex-col border-l border-gray-200 animate-in">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-indigo-600 text-white">
             <h3 className="font-bold flex items-center gap-2">
-              <i className="fas fa-robot"></i> ParkShare Assistant
+              <i className="fas fa-robot"></i> ParkShare AI
             </h3>
             <button onClick={() => setIsOpen(false)} className="hover:opacity-75">
-              <i className="fas fa-times text-xl"></i>
+              <i className="fas fa-xmark text-xl"></i>
             </button>
           </div>
 
@@ -68,7 +67,9 @@ export const AssistantDrawer: React.FC = () => {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 p-3 rounded-2xl text-sm animate-pulse">Thinking...</div>
+                <div className="bg-gray-100 p-3 rounded-2xl text-sm animate-pulse flex items-center gap-2">
+                  <i className="fas fa-circle-notch fa-spin text-indigo-600"></i> Thinking...
+                </div>
               </div>
             )}
           </div>
@@ -79,7 +80,7 @@ export const AssistantDrawer: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Ask me anything..."
+              placeholder="How can I help you?"
               className="flex-1 bg-gray-50 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button 

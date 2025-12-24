@@ -55,18 +55,18 @@ const App: React.FC = () => {
             {/* Hero Section */}
             <section className="relative h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1545179605-1296651e9d43?auto=format&fit=crop&q=80&w=2400" 
+                src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=2400" 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 alt="Modern Garage"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60 flex flex-col items-center justify-center p-6 text-center">
+              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-6 text-center">
                 <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
-                  Parking, <span className="text-indigo-400">Simplified.</span>
+                  Parking, <span className="text-indigo-400 text-glow">Simplified.</span>
                 </h1>
                 
                 <div className="bg-white/95 backdrop-blur-md p-2 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full max-w-3xl animate-in" style={{ animationDelay: '0.1s' }}>
                   <div className="flex-grow flex items-center gap-3 px-6 py-4">
-                    <i className="fas fa-search text-gray-400"></i>
+                    <i className="fas fa-magnifying-glass text-gray-400"></i>
                     <input 
                       type="text" 
                       placeholder="Where do you want to park?"
@@ -90,11 +90,11 @@ const App: React.FC = () => {
             <div className="flex items-center justify-center gap-8 overflow-x-auto pb-4 no-scrollbar animate-in" style={{ animationDelay: '0.2s' }}>
               {[
                 { name: 'Underground', icon: 'fa-warehouse' },
-                { name: 'EV Ready', icon: 'fa-bolt' },
+                { name: 'EV Ready', icon: 'fa-charging-station' },
                 { name: '24/7 Access', icon: 'fa-clock' },
-                { name: 'Monthly', icon: 'fa-calendar-check' },
-                { name: 'Large Spots', icon: 'fa-truck' },
-                { name: 'Security', icon: 'fa-shield-check' }
+                { name: 'Monthly', icon: 'fa-calendar-days' },
+                { name: 'Large Spots', icon: 'fa-truck-pickup' },
+                { name: 'Security', icon: 'fa-shield-halved' }
               ].map(cat => (
                 <button 
                   key={cat.name} 
@@ -123,7 +123,7 @@ const App: React.FC = () => {
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-4">
                 <button onClick={() => setView(ViewMode.HOME)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <i className="fas fa-arrow-left text-xl"></i>
+                  <i className="fas fa-chevron-left text-xl"></i>
                 </button>
                 <h2 className="text-4xl font-extrabold tracking-tight">Spots in {searchQuery || 'Your Area'}</h2>
               </div>
@@ -134,9 +134,9 @@ const App: React.FC = () => {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md">
-                      <i className="fas fa-wand-magic-sparkles"></i>
+                      <i className="fas fa-sparkles"></i>
                     </div>
-                    <span className="font-bold text-lg">ParkShare AI Intelligence</span>
+                    <span className="font-bold text-lg">AI Local Intelligence</span>
                   </div>
                   
                   {loadingInsights ? (
@@ -147,7 +147,7 @@ const App: React.FC = () => {
                   ) : (
                     <div className="space-y-6">
                       <p className="text-xl font-medium leading-relaxed opacity-95">
-                        {insights?.text || "Analyzing current parking trends for this neighborhood..."}
+                        {insights?.text || "Searching for the latest parking data for this area..."}
                       </p>
                       {insights?.sources && insights.sources.length > 0 && (
                         <div className="flex flex-wrap gap-3">
@@ -157,9 +157,9 @@ const App: React.FC = () => {
                               href={src.uri} 
                               target="_blank" 
                               rel="noopener" 
-                              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full backdrop-blur-sm transition-all"
+                              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full backdrop-blur-sm transition-all flex items-center gap-2"
                             >
-                              <i className="fas fa-external-link-alt mr-2"></i> {src.title}
+                              <i className="fas fa-link"></i> {src.title}
                             </a>
                           ))}
                         </div>
@@ -189,7 +189,7 @@ const App: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
               <div className="lg:col-span-8 space-y-8">
-                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl">
+                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100">
                   <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
                 </div>
                 
@@ -212,7 +212,7 @@ const App: React.FC = () => {
                       <img src={selectedSpot.owner.avatar} className="w-16 h-16 rounded-2xl object-cover border-4 border-white shadow-sm" alt={selectedSpot.owner.name} />
                       <div>
                         <p className="text-xl font-bold">Hosted by {selectedSpot.owner.name}</p>
-                        <p className="text-gray-500 font-medium">Verified Professional Host</p>
+                        <p className="text-gray-500 font-medium">Verified Superhost</p>
                       </div>
                     </div>
                     <button className="bg-white text-indigo-600 font-bold px-6 py-3 rounded-2xl border border-gray-200 hover:bg-indigo-50 transition-colors">
@@ -221,7 +221,7 @@ const App: React.FC = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="text-2xl font-bold">Space Description</h3>
+                    <h3 className="text-2xl font-bold">About this space</h3>
                     <p className="text-gray-600 leading-relaxed text-lg">
                       {selectedSpot.description}
                     </p>
@@ -231,7 +231,7 @@ const App: React.FC = () => {
                     {selectedSpot.features.map(f => (
                       <div key={f} className="flex items-center gap-3 p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
                         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-                          <i className="fas fa-check"></i>
+                          <i className="fas fa-circle-check"></i>
                         </div>
                         <span className="font-bold text-gray-700">{f}</span>
                       </div>
@@ -244,18 +244,18 @@ const App: React.FC = () => {
                 <div className="sticky top-32 p-8 border border-gray-100 rounded-[2.5rem] shadow-2xl bg-white space-y-6">
                   <div className="flex justify-between items-baseline">
                     <span className="text-4xl font-extrabold text-gray-900">${selectedSpot.pricePerHour.toFixed(2)}<span className="text-lg font-medium text-gray-400">/hr</span></span>
-                    <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Top Rated</span>
+                    <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Recommended</span>
                   </div>
                   
                   <div className="space-y-4 pt-4">
                     <div className="p-4 border border-gray-200 rounded-2xl bg-gray-50 space-y-2">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date & Time</p>
-                      <p className="font-bold">Select access period</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date Range</p>
+                      <p className="font-bold">Enter your arrival & departure</p>
                     </div>
                     <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl transition-all shadow-xl shadow-indigo-100 transform hover:scale-[1.02] active:scale-95 text-lg">
-                      Reserve Spot
+                      Reserve Now
                     </button>
-                    <p className="text-center text-gray-400 text-xs font-medium">No charge yet. Cancellation is free within 24h.</p>
+                    <p className="text-center text-gray-400 text-xs font-medium">Secure checkout via Stripe</p>
                   </div>
                 </div>
               </div>
@@ -266,16 +266,16 @@ const App: React.FC = () => {
         {view === ViewMode.HOST && (
           <div className="max-w-4xl mx-auto py-20 text-center space-y-12 animate-in">
             <div className="space-y-4">
-              <h2 className="text-6xl font-extrabold tracking-tighter">Turn your driveway into <span className="text-indigo-600">passive income.</span></h2>
+              <h2 className="text-6xl font-extrabold tracking-tighter">Monetize your <span className="text-indigo-600">idle space.</span></h2>
               <p className="text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
-                Over 50,000 people are already renting out their idle parking spaces.
+                Passive income for your driveway, garage, or dedicated parking lot.
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-8 text-left">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
               {[
-                { title: 'Safe', desc: 'Secure payments & identity verification.', icon: 'fa-shield-heart' },
-                { title: 'Flexible', desc: 'Set your own hours & pricing.', icon: 'fa-sliders' },
-                { title: 'Easy', desc: 'List in under 5 minutes.', icon: 'fa-bolt' }
+                { title: 'Secure', desc: 'Identity verification and secure payouts.', icon: 'fa-shield-halved' },
+                { title: 'Control', desc: 'Manage your calendar and set your rates.', icon: 'fa-sliders' },
+                { title: 'Fast', desc: 'List and start earning in minutes.', icon: 'fa-bolt-lightning' }
               ].map(feat => (
                 <div key={feat.title} className="p-8 bg-gray-50 rounded-[2rem] space-y-4">
                   <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center">
@@ -287,7 +287,7 @@ const App: React.FC = () => {
               ))}
             </div>
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-16 py-6 rounded-3xl font-extrabold text-xl transition-all shadow-2xl shadow-indigo-200 transform hover:scale-105 active:scale-95 inline-block">
-              Start Hosting Today
+              Become a Host
             </button>
           </div>
         )}
