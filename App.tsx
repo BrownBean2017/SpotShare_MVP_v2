@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [insights, setInsights] = useState<{ text: string, sources: GroundingSource[] } | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [heroStatus, setHeroStatus] = useState<'loading' | 'loaded'>('loading');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -54,15 +54,15 @@ const App: React.FC = () => {
         {view === ViewMode.HOME && (
           <div className="space-y-12">
             {/* Hero Section */}
-            <section className="relative h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl bg-indigo-900">
+            <section className="relative h-[500px] md:h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl bg-indigo-950">
               <img 
                 src="https://images.unsplash.com/photo-1542362567-b05e81799a14?auto=format&fit=crop&q=80&w=2400" 
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 ${heroLoaded ? 'opacity-50' : 'opacity-0'}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 ${heroStatus === 'loaded' ? 'opacity-60 scale-100' : 'opacity-0 scale-110'}`}
                 alt="Modern Garage"
-                onLoad={() => setHeroLoaded(true)}
+                onLoad={() => setHeroStatus('loaded')}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-center p-6 text-center">
-                <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
+                <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
                   Parking, <span className="text-indigo-400 text-glow">Simplified.</span>
                 </h1>
                 
@@ -71,7 +71,7 @@ const App: React.FC = () => {
                     <i className="fas fa-magnifying-glass text-gray-400"></i>
                     <input 
                       type="text" 
-                      placeholder="Where do you want to park?"
+                      placeholder="Address, city, or stadium name..."
                       className="w-full bg-transparent outline-none text-gray-900 font-medium placeholder:text-gray-400"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -80,7 +80,7 @@ const App: React.FC = () => {
                   </div>
                   <button 
                     onClick={performSearch}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl md:rounded-full font-bold transition-all transform hover:scale-105 active:scale-95"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl md:rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-indigo-200"
                   >
                     Search
                   </button>
@@ -112,10 +112,13 @@ const App: React.FC = () => {
             </div>
 
             {/* Featured Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 animate-in" style={{ animationDelay: '0.3s' }}>
-              {MOCK_SPOTS.map(spot => (
-                <ParkingCard key={spot.id} spot={spot} onClick={handleSpotClick} />
-              ))}
+            <div className="space-y-6 animate-in" style={{ animationDelay: '0.3s' }}>
+               <h2 className="text-2xl font-bold tracking-tight px-1">Discover spaces near you</h2>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {MOCK_SPOTS.map(spot => (
+                  <ParkingCard key={spot.id} spot={spot} onClick={handleSpotClick} />
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -197,7 +200,7 @@ const App: React.FC = () => {
                 
                 <div className="space-y-6">
                   <div className="border-b border-gray-100 pb-6">
-                    <h1 className="text-5xl font-extrabold text-gray-900 mb-4 tracking-tighter">{selectedSpot.title}</h1>
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tighter">{selectedSpot.title}</h1>
                     <div className="flex flex-wrap items-center gap-6 text-gray-600 font-semibold">
                       <span className="flex items-center gap-2 text-indigo-600">
                         <i className="fas fa-star"></i> {selectedSpot.rating}
@@ -229,7 +232,7 @@ const App: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {selectedSpot.features.map(f => (
                       <div key={f} className="flex items-center gap-3 p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
                         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
@@ -246,18 +249,18 @@ const App: React.FC = () => {
                 <div className="sticky top-32 p-8 border border-gray-100 rounded-[2.5rem] shadow-2xl bg-white space-y-6">
                   <div className="flex justify-between items-baseline">
                     <span className="text-4xl font-extrabold text-gray-900">${selectedSpot.pricePerHour.toFixed(2)}<span className="text-lg font-medium text-gray-400">/hr</span></span>
-                    <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Recommended</span>
+                    <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Best Value</span>
                   </div>
                   
                   <div className="space-y-4 pt-4">
                     <div className="p-4 border border-gray-200 rounded-2xl bg-gray-50 space-y-2">
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date Range</p>
-                      <p className="font-bold">Enter your arrival & departure</p>
+                      <p className="font-bold">Select timing</p>
                     </div>
                     <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl transition-all shadow-xl shadow-indigo-100 transform hover:scale-[1.02] active:scale-95 text-lg">
                       Reserve Now
                     </button>
-                    <p className="text-center text-gray-400 text-xs font-medium">Secure checkout via Stripe</p>
+                    <p className="text-center text-gray-400 text-xs font-medium">No hidden fees at checkout</p>
                   </div>
                 </div>
               </div>
@@ -268,16 +271,16 @@ const App: React.FC = () => {
         {view === ViewMode.HOST && (
           <div className="max-w-4xl mx-auto py-20 text-center space-y-12 animate-in">
             <div className="space-y-4">
-              <h2 className="text-6xl font-extrabold tracking-tighter">Monetize your <span className="text-indigo-600">idle space.</span></h2>
-              <p className="text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
-                Passive income for your driveway, garage, or dedicated parking lot.
+              <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter">Turn your empty space into <span className="text-indigo-600">income.</span></h2>
+              <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
+                Whether it's a driveway, garage, or lot—listing on ParkShare is free and fast.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
               {[
-                { title: 'Secure', desc: 'Identity verification and secure payouts.', icon: 'fa-shield-halved' },
-                { title: 'Control', desc: 'Manage your calendar and set your rates.', icon: 'fa-sliders' },
-                { title: 'Fast', desc: 'List and start earning in minutes.', icon: 'fa-bolt-lightning' }
+                { title: 'Secure', desc: 'Verified identities and secure payments via Stripe.', icon: 'fa-shield-halved' },
+                { title: 'Flexible', desc: 'You decide when to rent and for how much.', icon: 'fa-sliders' },
+                { title: 'Profitable', desc: 'Hosts earn an average of $300/mo per spot.', icon: 'fa-bolt-lightning' }
               ].map(feat => (
                 <div key={feat.title} className="p-8 bg-gray-50 rounded-[2rem] space-y-4">
                   <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center">
@@ -289,7 +292,7 @@ const App: React.FC = () => {
               ))}
             </div>
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-16 py-6 rounded-3xl font-extrabold text-xl transition-all shadow-2xl shadow-indigo-200 transform hover:scale-105 active:scale-95 inline-block">
-              Become a Host
+              Start Listing
             </button>
           </div>
         )}
