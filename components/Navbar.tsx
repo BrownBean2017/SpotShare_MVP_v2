@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ViewMode } from '../types';
+import { ViewMode } from '../types.ts';
 
 interface NavbarProps {
   onNavigate: (view: ViewMode) => void;
@@ -9,7 +9,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 md:px-12 py-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 md:px-12 py-4 flex items-center justify-between shadow-sm">
       <div 
         className="flex items-center gap-2 cursor-pointer group"
         onClick={() => onNavigate(ViewMode.HOME)}

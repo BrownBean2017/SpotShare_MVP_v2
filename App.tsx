@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { ParkingCard } from './components/ParkingCard';
-import { AssistantDrawer } from './components/AssistantDrawer';
-import { ViewMode, ParkingSpot, GroundingSource } from './types';
-import { MOCK_SPOTS } from './constants';
-import { getParkingInsights } from './services/geminiService';
+import React, { useState } from 'react';
+import { Navbar } from './components/Navbar.tsx';
+import { ParkingCard } from './components/ParkingCard.tsx';
+import { AssistantDrawer } from './components/AssistantDrawer.tsx';
+import { ViewMode, ParkingSpot, GroundingSource } from './types.ts';
+import { MOCK_SPOTS } from './constants.tsx';
+import { getParkingInsights } from './services/geminiService.ts';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewMode>(ViewMode.HOME);
@@ -30,14 +30,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white animate-fade-in">
       <Navbar onNavigate={setView} currentView={view} />
       
       <main className="max-w-7xl mx-auto px-4 md:px-12 py-8">
         {view === ViewMode.HOME && (
           <div className="space-y-12">
             {/* Hero Section */}
-            <div className="relative rounded-3xl overflow-hidden bg-gray-900 py-24 px-8 md:px-16">
+            <div className="relative rounded-3xl overflow-hidden bg-gray-900 py-24 px-8 md:px-16 animate-slide-up">
               <img 
                 src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=2000" 
                 className="absolute inset-0 w-full h-full object-cover opacity-50"
@@ -61,7 +61,7 @@ const App: React.FC = () => {
                   </div>
                   <button 
                     onClick={performSearch}
-                    className="bg-indigo-600 text-white px-8 py-3 rounded-xl md:rounded-full font-bold hover:bg-indigo-700 transition-all"
+                    className="bg-indigo-600 text-white px-8 py-3 rounded-xl md:rounded-full font-bold hover:bg-indigo-700 transition-all active:scale-95"
                   >
                     Search
                   </button>
@@ -70,7 +70,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Feature Tags */}
-            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide no-scrollbar">
+            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
               {['Underground', 'EV Charging', 'CCTV', 'Overnight', 'Valet', 'Monthly'].map(tag => (
                 <button key={tag} className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 hover:border-indigo-600 hover:bg-indigo-50 transition-all text-sm font-medium">
                   {tag}
@@ -88,7 +88,7 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.SEARCH && (
-          <div className="space-y-8">
+          <div className="space-y-8 animate-fade-in">
             <div className="flex items-center gap-4 mb-8">
               <button 
                 onClick={() => setView(ViewMode.HOME)}
@@ -145,7 +145,7 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.LISTING_DETAIL && selectedSpot && (
-          <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="max-w-5xl mx-auto space-y-8 animate-slide-up">
              <button 
                 onClick={() => setView(ViewMode.HOME)}
                 className="flex items-center gap-2 font-semibold hover:underline"
@@ -220,14 +220,14 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.HOST && (
-          <div className="max-w-2xl mx-auto text-center space-y-8 py-12">
+          <div className="max-w-2xl mx-auto text-center space-y-8 py-12 animate-slide-up">
             <div className="bg-indigo-600 w-24 h-24 rounded-3xl mx-auto flex items-center justify-center text-white shadow-2xl rotate-3">
               <i className="fas fa-hand-holding-dollar text-4xl"></i>
             </div>
             <h2 className="text-4xl font-extrabold">ParkShare your space.</h2>
             <p className="text-xl text-gray-600">Earn up to $500/month by renting out your idle driveway, garage, or parking spot.</p>
             <div className="flex flex-col gap-4">
-              <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform">
+              <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform active:scale-95">
                 Get Started
               </button>
               <button className="text-indigo-600 font-bold hover:underline">

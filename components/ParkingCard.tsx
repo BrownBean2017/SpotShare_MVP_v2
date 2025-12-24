@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ParkingSpot } from '../types';
+import { ParkingSpot } from '../types.ts';
 
 interface ParkingCardProps {
   spot: ParkingSpot;
@@ -10,7 +10,7 @@ interface ParkingCardProps {
 export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
   return (
     <div 
-      className="group cursor-pointer flex flex-col gap-3"
+      className="group cursor-pointer flex flex-col gap-3 animate-fade-in"
       onClick={() => onClick(spot)}
     >
       <div className="relative aspect-square overflow-hidden rounded-xl">
@@ -28,7 +28,7 @@ export const ParkingCard: React.FC<ParkingCardProps> = ({ spot, onClick }) => {
         <div className="flex justify-between items-start">
           <h3 className="font-semibold text-gray-900 line-clamp-1">{spot.location}</h3>
           <div className="flex items-center gap-1">
-            <i className="fas fa-star text-xs"></i>
+            <i className="fas fa-star text-xs text-indigo-600"></i>
             <span className="text-sm font-medium">{spot.rating}</span>
           </div>
         </div>
