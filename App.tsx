@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar.tsx';
 import { ParkingCard } from './components/ParkingCard.tsx';
 import { AssistantDrawer } from './components/AssistantDrawer.tsx';
@@ -12,38 +12,32 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [insights, setInsights] = useState<{ text: string, sources: GroundingSource[] } | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
-  const [heroStatus, setHeroStatus] = useState<'loading' | 'loaded'>('loading');
 
+  // Scroll to top on view change
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   }, [view]);
 
-  const handleSpotClick = useCallback((spot: ParkingSpot) => {
+  const handleSpotClick = (spot: ParkingSpot) => {
     setSelectedSpot(spot);
     setView(ViewMode.LISTING_DETAIL);
-  }, []);
+  };
 
-  const performSearch = async () => {
-    const query = searchQuery.trim();
-    if (!query) return;
+  const handleSearch = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!searchQuery.trim()) return;
     
     setLoadingInsights(true);
     setView(ViewMode.SEARCH);
     
     try {
-      const result = await getParkingInsights(query);
+      const result = await getParkingInsights(searchQuery);
       setInsights(result);
     } catch (err) {
-      console.error("Search error:", err);
-      setInsights({ text: "I couldn't find specific trends for this area, but here are some available spots.", sources: [] });
+      setInsights({ text: "Showing available spots in your area.", sources: [] });
     } finally {
       setLoadingInsights(false);
     }
-  };
-
-  const handleCategoryClick = (category: string) => {
-    setSearchQuery(category);
-    performSearch();
   };
 
   return (
@@ -53,71 +47,34 @@ const App: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {view === ViewMode.HOME && (
           <div className="space-y-12">
-            {/* Hero Section */}
-            <section className="relative h-[500px] md:h-[600px] rounded-[2.5rem] overflow-hidden group shadow-2xl bg-indigo-950">
+            {/* Simple Hero */}
+            <section className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden bg-indigo-900 shadow-xl">
               <img 
-                src="https://images.unsplash.com/photo-1542362567-b05e81799a14?auto=format&fit=crop&q=80&w=2400" 
-                className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 ${heroStatus === 'loaded' ? 'opacity-60 scale-100' : 'opacity-0 scale-110'}`}
-                alt="Modern Garage"
-                onLoad={() => setHeroStatus('loaded')}
+                src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=2400" 
+                className="absolute inset-0 w-full h-full object-cover opacity-50"
+                alt="Parking"
               />
-              {heroStatus === 'loading' && (
-                <div className="absolute inset-0 shimmer opacity-20"></div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col items-center justify-center p-6 text-center">
-                <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-2xl animate-in">
-                  Parking, <span className="text-indigo-400 text-glow">Simplified.</span>
-                </h1>
-                
-                <div className="bg-white/95 backdrop-blur-md p-2 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full max-w-3xl animate-in" style={{ animationDelay: '0.1s' }}>
-                  <div className="flex-grow flex items-center gap-3 px-6 py-4">
-                    <i className="fas fa-magnifying-glass text-gray-400"></i>
-                    <input 
-                      type="text" 
-                      placeholder="Address, city, or stadium name..."
-                      className="w-full bg-transparent outline-none text-gray-900 font-medium placeholder:text-gray-400"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && performSearch()}
-                    />
-                  </div>
-                  <button 
-                    onClick={performSearch}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl md:rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-indigo-200"
-                  >
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-white">
+                <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">Find Your Next Spot</h1>
+                <form onSubmit={handleSearch} className="w-full max-w-2xl bg-white rounded-full p-2 flex items-center shadow-2xl">
+                  <input 
+                    type="text" 
+                    placeholder="Where are you going?"
+                    className="flex-1 px-6 py-3 text-gray-900 outline-none rounded-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button type="submit" className="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-colors">
                     Search
                   </button>
-                </div>
+                </form>
               </div>
             </section>
 
-            {/* Categories */}
-            <div className="flex items-center justify-center gap-8 overflow-x-auto pb-4 no-scrollbar animate-in" style={{ animationDelay: '0.2s' }}>
-              {[
-                { name: 'Underground', icon: 'fa-warehouse' },
-                { name: 'EV Ready', icon: 'fa-charging-station' },
-                { name: '24/7 Access', icon: 'fa-clock' },
-                { name: 'Monthly', icon: 'fa-calendar-days' },
-                { name: 'Large Spots', icon: 'fa-truck-pickup' },
-                { name: 'Security', icon: 'fa-shield-halved' }
-              ].map(cat => (
-                <button 
-                  key={cat.name} 
-                  onClick={() => handleCategoryClick(cat.name)}
-                  className="flex-shrink-0 flex flex-col items-center gap-3 group transition-all"
-                >
-                  <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all border border-transparent group-hover:border-indigo-100">
-                    <i className={`fas ${cat.icon} text-2xl`}></i>
-                  </div>
-                  <span className="text-sm font-bold text-gray-500 group-hover:text-gray-900">{cat.name}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Featured Grid */}
-            <div className="space-y-6 animate-in" style={{ animationDelay: '0.3s' }}>
-               <h2 className="text-2xl font-bold tracking-tight px-1 text-gray-900">Discover spaces near you</h2>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Grid */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Featured parking spots</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {MOCK_SPOTS.map(spot => (
                   <ParkingCard key={spot.id} spot={spot} onClick={handleSpotClick} />
                 ))}
@@ -127,58 +84,31 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.SEARCH && (
-          <div className="space-y-12 animate-in">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-4">
-                <button onClick={() => setView(ViewMode.HOME)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                  <i className="fas fa-chevron-left text-xl"></i>
-                </button>
-                <h2 className="text-4xl font-extrabold tracking-tight">Spots in {searchQuery || 'Your Area'}</h2>
-              </div>
-
-              {/* Smart Insight Panel */}
-              <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md">
-                      <i className="fas fa-sparkles"></i>
-                    </div>
-                    <span className="font-bold text-lg">AI Local Intelligence</span>
-                  </div>
-                  
-                  {loadingInsights ? (
-                    <div className="space-y-3 animate-pulse">
-                      <div className="h-4 bg-white/20 rounded w-3/4"></div>
-                      <div className="h-4 bg-white/20 rounded w-1/2"></div>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <p className="text-xl font-medium leading-relaxed opacity-95">
-                        {insights?.text || "Searching for the latest parking data for this area..."}
-                      </p>
-                      {insights?.sources && insights.sources.length > 0 && (
-                        <div className="flex flex-wrap gap-3">
-                          {insights.sources.map((src, i) => (
-                            <a 
-                              key={i} 
-                              href={src.uri} 
-                              target="_blank" 
-                              rel="noopener" 
-                              className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full backdrop-blur-sm transition-all flex items-center gap-2"
-                            >
-                              <i className="fas fa-link"></i> {src.title}
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
+          <div className="space-y-8 animate-fade-in">
+            <div className="flex items-center gap-4">
+              <button onClick={() => setView(ViewMode.HOME)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <i className="fas fa-arrow-left"></i>
+              </button>
+              <h2 className="text-3xl font-bold">Results for "{searchQuery}"</h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* AI Insights Card */}
+            <div className="bg-indigo-50 rounded-3xl p-6 border border-indigo-100">
+              <div className="flex items-center gap-2 mb-3 text-indigo-600 font-bold">
+                <i className="fas fa-sparkles"></i>
+                <span>ParkShare AI Insight</span>
+              </div>
+              {loadingInsights ? (
+                <div className="space-y-2 animate-pulse">
+                  <div className="h-4 bg-indigo-200/50 rounded w-3/4"></div>
+                  <div className="h-4 bg-indigo-200/50 rounded w-1/2"></div>
+                </div>
+              ) : (
+                <p className="text-indigo-900 font-medium">{insights?.text || "No specific local data available. Here are some options."}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {MOCK_SPOTS.map(spot => (
                 <ParkingCard key={spot.id} spot={spot} onClick={handleSpotClick} />
               ))}
@@ -187,84 +117,50 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.LISTING_DETAIL && selectedSpot && (
-          <div className="max-w-6xl mx-auto animate-in">
-            <button 
-              onClick={() => setView(ViewMode.HOME)}
-              className="mb-8 flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600 transition-colors"
-            >
-              <i className="fas fa-arrow-left"></i> Back to explore
+          <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+            <button onClick={() => setView(ViewMode.HOME)} className="font-bold text-gray-500 hover:text-gray-900">
+              <i className="fas fa-chevron-left mr-2"></i> Back
             </button>
+            
+            <div className="aspect-video rounded-3xl overflow-hidden shadow-lg">
+              <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
+            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-              <div className="lg:col-span-8 space-y-8">
-                <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-100 flex items-center justify-center border border-gray-100">
-                   <img src={selectedSpot.image} className="w-full h-full object-cover" alt={selectedSpot.title} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div className="md:col-span-2 space-y-6">
+                <h1 className="text-4xl font-extrabold text-gray-900">{selectedSpot.title}</h1>
+                <div className="flex items-center gap-4 text-gray-600 font-semibold border-b pb-6">
+                  <span className="text-indigo-600"><i className="fas fa-star"></i> {selectedSpot.rating}</span>
+                  <span>{selectedSpot.reviews} reviews</span>
+                  <span>{selectedSpot.location}</span>
                 </div>
                 
-                <div className="space-y-6">
-                  <div className="border-b border-gray-100 pb-6">
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tighter">{selectedSpot.title}</h1>
-                    <div className="flex flex-wrap items-center gap-6 text-gray-600 font-semibold">
-                      <span className="flex items-center gap-2 text-indigo-600">
-                        <i className="fas fa-star"></i> {selectedSpot.rating}
-                      </span>
-                      <span>•</span>
-                      <span>{selectedSpot.reviews} reviews</span>
-                      <span>•</span>
-                      <span className="underline cursor-pointer hover:text-indigo-600">{selectedSpot.location}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-6 bg-gray-50 rounded-3xl border border-gray-100">
-                    <div className="flex items-center gap-4">
-                      <img src={selectedSpot.owner.avatar} className="w-16 h-16 rounded-2xl object-cover border-4 border-white shadow-sm" alt={selectedSpot.owner.name} />
-                      <div>
-                        <p className="text-xl font-bold text-gray-900">Hosted by {selectedSpot.owner.name}</p>
-                        <p className="text-gray-500 font-medium">Verified Superhost</p>
-                      </div>
-                    </div>
-                    <button className="bg-white text-indigo-600 font-bold px-6 py-3 rounded-2xl border border-gray-200 hover:bg-indigo-50 transition-colors shadow-sm">
-                      Contact Host
-                    </button>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-gray-900">About this space</h3>
-                    <p className="text-gray-600 leading-relaxed text-lg">
-                      {selectedSpot.description}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {selectedSpot.features.map(f => (
-                      <div key={f} className="flex items-center gap-3 p-4 bg-white border border-gray-100 rounded-2xl shadow-sm">
-                        <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
-                          <i className="fas fa-circle-check"></i>
-                        </div>
-                        <span className="font-bold text-gray-700">{f}</span>
-                      </div>
-                    ))}
+                <div className="flex items-center gap-4 py-4">
+                  <img src={selectedSpot.owner.avatar} className="w-12 h-12 rounded-full object-cover" alt="host" />
+                  <div>
+                    <p className="font-bold text-lg">Hosted by {selectedSpot.owner.name}</p>
+                    <p className="text-gray-500 text-sm">Member since 2023</p>
                   </div>
                 </div>
-              </div>
-              
-              <div className="lg:col-span-4">
-                <div className="sticky top-32 p-8 border border-gray-100 rounded-[2.5rem] shadow-2xl bg-white space-y-6">
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-4xl font-extrabold text-gray-900">${selectedSpot.pricePerHour.toFixed(2)}<span className="text-lg font-medium text-gray-400">/hr</span></span>
-                    <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Best Value</span>
-                  </div>
-                  
-                  <div className="space-y-4 pt-4">
-                    <div className="p-4 border border-gray-200 rounded-2xl bg-gray-50 space-y-2">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Date Range</p>
-                      <p className="font-bold text-gray-900">Select timing</p>
+
+                <p className="text-gray-600 text-lg leading-relaxed">{selectedSpot.description}</p>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {selectedSpot.features.map(f => (
+                    <div key={f} className="flex items-center gap-2 text-gray-700 font-medium">
+                      <i className="fas fa-check text-green-500"></i> {f}
                     </div>
-                    <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-5 rounded-2xl transition-all shadow-xl shadow-indigo-100 transform hover:scale-[1.02] active:scale-95 text-lg">
-                      Reserve Now
-                    </button>
-                    <p className="text-center text-gray-400 text-xs font-medium">No hidden fees at checkout</p>
-                  </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="p-6 border rounded-3xl shadow-lg sticky top-24">
+                  <div className="text-2xl font-extrabold mb-4">${selectedSpot.pricePerHour.toFixed(2)} <span className="text-sm font-normal text-gray-500">/ hour</span></div>
+                  <button className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition-colors">
+                    Reserve Space
+                  </button>
+                  <p className="text-center text-xs text-gray-400 mt-4 italic">Free cancellation up to 24h before arrival</p>
                 </div>
               </div>
             </div>
@@ -272,30 +168,28 @@ const App: React.FC = () => {
         )}
 
         {view === ViewMode.HOST && (
-          <div className="max-w-4xl mx-auto py-20 text-center space-y-12 animate-in">
-            <div className="space-y-4">
-              <h2 className="text-5xl md:text-6xl font-extrabold tracking-tighter text-gray-900">Turn your empty space into <span className="text-indigo-600">income.</span></h2>
-              <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto font-medium">
-                Whether it's a driveway, garage, or lot—listing on ParkShare is free and fast.
-              </p>
+          <div className="max-w-3xl mx-auto py-16 text-center space-y-8 animate-fade-in">
+            <h2 className="text-5xl font-extrabold text-gray-900">Your space is worth <span className="text-indigo-600">money.</span></h2>
+            <p className="text-xl text-gray-500">List your driveway, garage, or open lot in under 5 minutes.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left py-8">
+              <div className="p-6 bg-gray-50 rounded-2xl">
+                <i className="fas fa-shield-alt text-2xl text-indigo-600 mb-4"></i>
+                <h4 className="font-bold mb-2">Secure</h4>
+                <p className="text-sm text-gray-600">ID verification and covered by ParkShare insurance.</p>
+              </div>
+              <div className="p-6 bg-gray-50 rounded-2xl">
+                <i className="fas fa-clock text-2xl text-indigo-600 mb-4"></i>
+                <h4 className="font-bold mb-2">Flexible</h4>
+                <p className="text-sm text-gray-600">Set your own availability and hourly rates.</p>
+              </div>
+              <div className="p-6 bg-gray-50 rounded-2xl">
+                <i className="fas fa-wallet text-2xl text-indigo-600 mb-4"></i>
+                <h4 className="font-bold mb-2">Fast Payout</h4>
+                <p className="text-sm text-gray-600">Funds transferred directly to your bank weekly.</p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-              {[
-                { title: 'Secure', desc: 'Verified identities and secure payments via Stripe.', icon: 'fa-shield-halved' },
-                { title: 'Flexible', desc: 'You decide when to rent and for how much.', icon: 'fa-sliders' },
-                { title: 'Profitable', desc: 'Hosts earn an average of $300/mo per spot.', icon: 'fa-bolt-lightning' }
-              ].map(feat => (
-                <div key={feat.title} className="p-8 bg-gray-50 rounded-[2rem] space-y-4 border border-gray-100">
-                  <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center">
-                    <i className={`fas ${feat.icon} text-xl`}></i>
-                  </div>
-                  <h4 className="text-xl font-bold text-gray-900">{feat.title}</h4>
-                  <p className="text-gray-500 leading-relaxed font-medium">{feat.desc}</p>
-                </div>
-              ))}
-            </div>
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-16 py-6 rounded-3xl font-extrabold text-xl transition-all shadow-2xl shadow-indigo-200 transform hover:scale-105 active:scale-95 inline-block">
-              Start Listing
+            <button className="bg-indigo-600 text-white px-12 py-5 rounded-2xl font-bold text-xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100">
+              List Your Spot
             </button>
           </div>
         )}
