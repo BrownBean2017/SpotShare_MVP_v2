@@ -6,27 +6,33 @@
     <title>ParkShare - Parking Spot Simplified!</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
-      // Essential shims for browser-side execution of Node-oriented packages
-      window.process = window.process || {};
-      window.process.env = window.process.env || {};
-      window.process.env.NODE_ENV = 'production';
-      window.process.browser = true;
+      window.process = { env: { NODE_ENV: 'production' } };
       window.global = window;
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+        :root { --brand: #4f46e5; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; color: #1a1a1a; margin: 0; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slide-up { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-fade-in { animation: fade-in 0.3s ease-out; }
-        .animate-slide-up { animation: slide-up 0.4s ease-out; }
-        
         .parking-card-shadow {
-          box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .parking-card-shadow:hover {
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+          transform: translateY(-4px);
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        .glass-nav {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
         }
     </style>
     <script type="importmap">
@@ -43,7 +49,7 @@
 }
 </script>
 </head>
-<body class="bg-white text-gray-900">
+<body>
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
 </body>
